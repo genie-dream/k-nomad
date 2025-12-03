@@ -1,61 +1,80 @@
 "use client";
 
-import { Search, User } from "lucide-react";
+import { Search, User, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useState } from "react";
-import AuthModal from "./AuthModal";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function Header() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
-    <>
-      <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          {/* 로고 */}
-          <div className="flex items-center space-x-2">
-            <div className="text-2xl font-bold text-primary-orange">
-              🗺️ NOMAD KOREA
-            </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* 로고 */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="text-2xl font-bold text-primary-orange">
+            🗺️ NOMAD KOREA
           </div>
+        </Link>
 
-          {/* 검색바 */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="도시 이름을 검색하세요..."
-                className="pl-10 w-full"
-              />
-            </div>
-          </div>
-
-          {/* 우측 메뉴 */}
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              className="hidden md:inline-flex"
-              onClick={() => console.log("도시 추가")}
-            >
-              도시 추가
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsLoginModalOpen(true)}
-            >
-              <User className="mr-2 h-4 w-4" />
-              로그인
-            </Button>
+        {/* 검색바 */}
+        <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="도시 이름을 검색하세요..."
+              className="pl-10 w-full"
+            />
           </div>
         </div>
-      </header>
 
-      <AuthModal
-        open={isLoginModalOpen}
-        onOpenChange={setIsLoginModalOpen}
-      />
-    </>
+        {/* 우측 메뉴 */}
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            className="hidden md:inline-flex"
+            onClick={() => console.log("도시 추가")}
+          >
+            도시 추가
+          </Button>
+
+          {!loading && (
+            <>
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 hidden md:inline">
+                    {user.email}
+                  </span>
+                  <Button variant="outline" onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    로그아웃
+                  </Button>
+                </div>
+              ) : (
+                <Link href="/login">
+                  <Button variant="outline">
+                    <User className="mr-2 h-4 w-4" />
+                    로그인
+                  </Button>
+                </Link>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </header>
   );
 }

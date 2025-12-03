@@ -1,8 +1,14 @@
+// Phase 2: 필터 관련 타입 정의
+export type Budget = "100만원 이하" | "100~200만원" | "200만원 이상";
+export type Region = "수도권" | "경상도" | "전라도" | "강원도" | "제주도" | "충청도";
+export type Environment = "자연친화" | "도심선호" | "카페작업" | "코워킹 필수";
+export type Season = "봄" | "여름" | "가을" | "겨울";
+
 export interface City {
   id: string;
   name: string;
   nameEn: string;
-  region: string;
+  region: Region;
   image: string;
   rating: number;
   monthlyCost: number;
@@ -26,6 +32,12 @@ export interface City {
   costOfLiving: number; // 1-5
   convenience: number; // 1-5
   nature: number; // 1-5
+
+  // Phase 2: 새로운 필터 필드
+  budget: Budget;
+  environment: Environment[];
+  bestSeason: Season[];
+  dislikes: number;
 }
 
 export const cities: City[] = [
@@ -51,12 +63,16 @@ export const cities: City[] = [
     costOfLiving: 2.0,
     convenience: 5.0,
     nature: 2.5,
+    budget: "200만원 이상",
+    environment: ["도심선호", "카페작업", "코워킹 필수"],
+    bestSeason: ["봄", "가을", "겨울"],
+    dislikes: 145,
   },
   {
     id: "busan",
     name: "부산",
     nameEn: "Busan",
-    region: "영남권",
+    region: "경상도",
     image: "/images/cities/busan.jpg",
     rating: 4.5,
     monthlyCost: 1800000,
@@ -74,6 +90,10 @@ export const cities: City[] = [
     costOfLiving: 4.0,
     convenience: 4.0,
     nature: 4.5,
+    budget: "100~200만원",
+    environment: ["자연친화", "카페작업"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 87,
   },
   {
     id: "jeju",
@@ -97,12 +117,16 @@ export const cities: City[] = [
     costOfLiving: 3.5,
     convenience: 3.0,
     nature: 5.0,
+    budget: "200만원 이상",
+    environment: ["자연친화", "카페작업"],
+    bestSeason: ["봄", "여름", "가을"],
+    dislikes: 203,
   },
   {
     id: "daejeon",
     name: "대전",
     nameEn: "Daejeon",
-    region: "충청권",
+    region: "충청도",
     image: "/images/cities/daejeon.jpg",
     rating: 4.0,
     monthlyCost: 1500000,
@@ -120,12 +144,16 @@ export const cities: City[] = [
     costOfLiving: 4.5,
     convenience: 3.5,
     nature: 3.5,
+    budget: "100~200만원",
+    environment: ["도심선호", "코워킹 필수"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 98,
   },
   {
     id: "gwangju",
     name: "광주",
     nameEn: "Gwangju",
-    region: "호남권",
+    region: "전라도",
     image: "/images/cities/gwangju.jpg",
     rating: 3.9,
     monthlyCost: 1300000,
@@ -143,12 +171,16 @@ export const cities: City[] = [
     costOfLiving: 4.5,
     convenience: 3.5,
     nature: 3.0,
+    budget: "100만원 이하",
+    environment: ["도심선호", "카페작업"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 67,
   },
   {
     id: "gangneung",
     name: "강릉",
     nameEn: "Gangneung",
-    region: "강원권",
+    region: "강원도",
     image: "/images/cities/gangneung.jpg",
     rating: 4.2,
     monthlyCost: 1600000,
@@ -166,12 +198,16 @@ export const cities: City[] = [
     costOfLiving: 3.8,
     convenience: 3.0,
     nature: 4.5,
+    budget: "100~200만원",
+    environment: ["자연친화", "카페작업"],
+    bestSeason: ["여름", "가을", "겨울"],
+    dislikes: 76,
   },
   {
     id: "jeonju",
     name: "전주",
     nameEn: "Jeonju",
-    region: "호남권",
+    region: "전라도",
     image: "/images/cities/jeonju.jpg",
     rating: 4.1,
     monthlyCost: 1400000,
@@ -189,12 +225,16 @@ export const cities: City[] = [
     costOfLiving: 4.0,
     convenience: 3.5,
     nature: 3.5,
+    budget: "100만원 이하",
+    environment: ["도심선호"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 54,
   },
   {
     id: "sokcho",
     name: "속초",
     nameEn: "Sokcho",
-    region: "강원권",
+    region: "강원도",
     image: "/images/cities/sokcho.jpg",
     rating: 4.3,
     monthlyCost: 1500000,
@@ -212,6 +252,10 @@ export const cities: City[] = [
     costOfLiving: 3.8,
     convenience: 2.8,
     nature: 5.0,
+    budget: "100~200만원",
+    environment: ["자연친화"],
+    bestSeason: ["여름", "가을", "겨울"],
+    dislikes: 89,
   },
   {
     id: "incheon",
@@ -235,12 +279,16 @@ export const cities: City[] = [
     costOfLiving: 3.0,
     convenience: 4.0,
     nature: 3.0,
+    budget: "200만원 이상",
+    environment: ["도심선호", "코워킹 필수"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 123,
   },
   {
     id: "yeosu",
     name: "여수",
     nameEn: "Yeosu",
-    region: "호남권",
+    region: "전라도",
     image: "/images/cities/yeosu.jpg",
     rating: 4.0,
     monthlyCost: 1350000,
@@ -258,12 +306,16 @@ export const cities: City[] = [
     costOfLiving: 4.0,
     convenience: 3.0,
     nature: 4.5,
+    budget: "100만원 이하",
+    environment: ["자연친화"],
+    bestSeason: ["여름", "가을"],
+    dislikes: 43,
   },
   {
     id: "gyeongju",
     name: "경주",
     nameEn: "Gyeongju",
-    region: "영남권",
+    region: "경상도",
     image: "/images/cities/gyeongju.jpg",
     rating: 3.7,
     monthlyCost: 1100000,
@@ -281,12 +333,16 @@ export const cities: City[] = [
     costOfLiving: 4.5,
     convenience: 2.8,
     nature: 4.0,
+    budget: "100만원 이하",
+    environment: ["자연친화", "도심선호"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 38,
   },
   {
     id: "daegu",
     name: "대구",
     nameEn: "Daegu",
-    region: "영남권",
+    region: "경상도",
     image: "/images/cities/daegu.jpg",
     rating: 3.9,
     monthlyCost: 1400000,
@@ -304,6 +360,10 @@ export const cities: City[] = [
     costOfLiving: 4.0,
     convenience: 4.0,
     nature: 3.0,
+    budget: "100만원 이하",
+    environment: ["도심선호", "코워킹 필수"],
+    bestSeason: ["봄", "가을"],
+    dislikes: 78,
   },
 ];
 
@@ -321,4 +381,8 @@ export const getTopRatedCities = () => {
 
 export const getCityById = (id: string) => {
   return cities.find(city => city.id === id);
+};
+
+export const getCitiesByLikes = () => {
+  return cities.sort((a, b) => b.likes - a.likes);
 };

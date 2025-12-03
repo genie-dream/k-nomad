@@ -1,16 +1,58 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
 import CityCard from "@/components/CityCard";
 import Sidebar from "@/components/Sidebar";
-import ValuePropositionSection from "@/components/ValuePropositionSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import SortSelect from "@/components/SortSelect";
-import Pagination from "@/components/Pagination";
 import { cities } from "@/data/cities";
+import type { FilterState } from "@/components/FilterBar";
 
 export default function Home() {
+  const [filters, setFilters] = useState<FilterState>({
+    budget: "전체",
+    region: "전체",
+    environment: [],
+    bestSeason: [],
+  });
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
+
+  // 필터링 로직
+  const filteredCities = cities.filter((city) => {
+    // 예산 필터
+    if (filters.budget !== "전체" && city.budget !== filters.budget) {
+      return false;
+    }
+
+    // 지역 필터
+    if (filters.region !== "전체" && city.region !== filters.region) {
+      return false;
+    }
+
+    // 환경 필터 (다중 선택: 선택된 환경 중 하나라도 포함되어야 함)
+    if (
+      filters.environment.length > 0 &&
+      !filters.environment.some((env) => city.environment.includes(env))
+    ) {
+      return false;
+    }
+
+    // 최고 계절 필터 (다중 선택: 선택된 계절 중 하나라도 포함되어야 함)
+    if (
+      filters.bestSeason.length > 0 &&
+      !filters.bestSeason.some((season) => city.bestSeason.includes(season))
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -20,7 +62,7 @@ export default function Home() {
         <HeroSection />
 
         {/* Filter Bar */}
-        <FilterBar />
+        <FilterBar onFilterChange={handleFilterChange} />
 
         {/* Main Content Area */}
         <section className="py-12 bg-gray-50">
@@ -28,21 +70,17 @@ export default function Home() {
             <div className="flex flex-col lg:flex-row gap-8">
               {/* 도시 카드 그리드 (70%) */}
               <div className="flex-1">
-                <div className="mb-6 flex items-center justify-between">
+                <div className="mb-6">
                   <h2 className="text-2xl font-bold">
-                    전체 도시 <span className="text-primary-orange">{cities.length}</span>개
+                    전체 도시 <span className="text-primary-orange">{filteredCities.length}</span>개
                   </h2>
-                  <SortSelect />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {cities.map((city) => (
+                  {filteredCities.map((city) => (
                     <CityCard key={city.id} city={city} />
                   ))}
                 </div>
-
-                {/* Pagination */}
-                <Pagination />
               </div>
 
               {/* Sidebar (30%) */}
@@ -54,12 +92,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Value Proposition Section */}
-        <ValuePropositionSection />
-
-        {/* Testimonials Section */}
-        <TestimonialsSection />
       </main>
 
       <Footer />

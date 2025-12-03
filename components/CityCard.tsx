@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { ThumbsUp, MessageCircle, Star, Users, Wifi, Coffee, Train } from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { City } from "@/data/cities";
 
 interface CityCardProps {
@@ -11,6 +11,45 @@ interface CityCardProps {
 }
 
 export default function CityCard({ city }: CityCardProps) {
+  const [userLiked, setUserLiked] = useState(false);
+  const [userDisliked, setUserDisliked] = useState(false);
+  const [likesCount, setLikesCount] = useState(city.likes);
+  const [dislikesCount, setDislikesCount] = useState(city.dislikes);
+
+  const handleLike = () => {
+    if (userLiked) {
+      // 좋아요 취소
+      setUserLiked(false);
+      setLikesCount(likesCount - 1);
+    } else {
+      // 좋아요 선택
+      setUserLiked(true);
+      setLikesCount(likesCount + 1);
+      // 싫어요가 선택되어 있으면 취소
+      if (userDisliked) {
+        setUserDisliked(false);
+        setDislikesCount(dislikesCount - 1);
+      }
+    }
+  };
+
+  const handleDislike = () => {
+    if (userDisliked) {
+      // 싫어요 취소
+      setUserDisliked(false);
+      setDislikesCount(dislikesCount - 1);
+    } else {
+      // 싫어요 선택
+      setUserDisliked(true);
+      setDislikesCount(dislikesCount + 1);
+      // 좋아요가 선택되어 있으면 취소
+      if (userLiked) {
+        setUserLiked(false);
+        setLikesCount(likesCount - 1);
+      }
+    }
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
       {/* 도시 이미지 */}
@@ -19,12 +58,6 @@ export default function CityCard({ city }: CityCardProps) {
           <Badge className="bg-white text-gray-900 hover:bg-white">
             {city.region}
           </Badge>
-        </div>
-        <div className="absolute top-3 right-3">
-          <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-semibold flex items-center gap-1">
-            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            {city.rating}
-          </div>
         </div>
       </div>
 
@@ -35,43 +68,19 @@ export default function CityCard({ city }: CityCardProps) {
           <span className="text-2xl">{city.weatherIcon}</span>
         </div>
 
-        {/* 가격 */}
-        <div className="text-2xl font-bold text-primary-orange mb-3">
-          ₩{city.monthlyCost.toLocaleString()}
-          <span className="text-sm text-gray-500 font-normal">/월</span>
-        </div>
-
-        {/* 지표들 */}
-        <div className="grid grid-cols-3 gap-2 mb-3 text-sm">
-          <div className="flex items-center gap-1">
-            <Coffee className="h-4 w-4 text-gray-500" />
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full mr-0.5 ${
-                    i < city.cafeScore ? "bg-primary-orange" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
+        {/* Key-Value 형태 정보 */}
+        <div className="space-y-2 mb-3">
+          <div className="text-sm">
+            <span className="font-semibold text-gray-700">예산:</span>{" "}
+            <span className="text-gray-900">{city.budget}</span>
           </div>
-          <div className="flex items-center gap-1 text-gray-700">
-            <Wifi className="h-4 w-4" />
-            <span>{city.internetSpeed} Mbps</span>
+          <div className="text-sm">
+            <span className="font-semibold text-gray-700">환경:</span>{" "}
+            <span className="text-gray-900">{city.environment.join(", ")}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Train className="h-4 w-4 text-gray-500" />
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full mr-0.5 ${
-                    i < city.transportScore ? "bg-primary-orange" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
+          <div className="text-sm">
+            <span className="font-semibold text-gray-700">최고 계절:</span>{" "}
+            <span className="text-gray-900">{city.bestSeason.join(", ")}</span>
           </div>
         </div>
 
@@ -83,33 +92,31 @@ export default function CityCard({ city }: CityCardProps) {
             </Badge>
           ))}
         </div>
-
-        {/* 현재 노마드 수 */}
-        <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-          <Users className="h-4 w-4" />
-          <span className="font-semibold">{city.currentNomads}명</span>
-          <span>작업 중</span>
-        </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-sm text-gray-600">
-          <button className="flex items-center gap-1 hover:text-primary-orange">
-            <ThumbsUp className="h-4 w-4" />
-            <span>{city.likes}</span>
-          </button>
-          <button className="flex items-center gap-1 hover:text-primary-orange">
-            <MessageCircle className="h-4 w-4" />
-            <span>{city.comments}</span>
-          </button>
-        </div>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => console.log("View city:", city.id)}
+      <CardFooter className="p-4 pt-0 flex items-center gap-3">
+        <button
+          className={`flex items-center gap-1 text-sm transition-colors ${
+            userLiked
+              ? "text-orange-500"
+              : "text-gray-600 hover:text-orange-500"
+          }`}
+          onClick={handleLike}
         >
-          상세보기
-        </Button>
+          <ThumbsUp className="h-4 w-4" fill={userLiked ? "currentColor" : "none"} />
+          <span>{likesCount}</span>
+        </button>
+        <button
+          className={`flex items-center gap-1 text-sm transition-colors ${
+            userDisliked
+              ? "text-orange-500"
+              : "text-gray-600 hover:text-orange-500"
+          }`}
+          onClick={handleDislike}
+        >
+          <ThumbsDown className="h-4 w-4" fill={userDisliked ? "currentColor" : "none"} />
+          <span>{dislikesCount}</span>
+        </button>
       </CardFooter>
     </Card>
   );

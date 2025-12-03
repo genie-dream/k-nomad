@@ -1,25 +1,25 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { TrendingUp, Users, BarChart3 } from "lucide-react";
-import { getTrendingCities } from "@/data/cities";
+import { List, BarChart3 } from "lucide-react";
+import { getCitiesByLikes } from "@/data/cities";
 
 export default function Sidebar() {
-  const trendingCities = getTrendingCities();
+  const allCities = getCitiesByLikes();
 
   return (
     <div className="space-y-6">
-      {/* 이번 주 급상승 */}
+      {/* 도시 리스트 */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary-orange" />
-            이번 주 급상승
+            <List className="h-5 w-5 text-primary-orange" />
+            도시 리스트
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {trendingCities.map((city, index) => (
+            {allCities.map((city, index) => (
               <div
                 key={city.id}
                 className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-lg cursor-pointer"
@@ -31,12 +31,9 @@ export default function Sidebar() {
                   <div>
                     <div className="font-semibold">{city.name}</div>
                     <div className="text-xs text-gray-500">
-                      {city.currentNomads}명
+                      좋아요 {city.likes}
                     </div>
                   </div>
-                </div>
-                <div className="text-sm font-semibold text-green-600">
-                  +{(Math.random() * 50 + 20).toFixed(0)}%
                 </div>
               </div>
             ))}
@@ -94,28 +91,6 @@ export default function Sidebar() {
               <p className="text-gray-700">"강릉 작업 환경 좋아요"</p>
               <p className="text-xs text-gray-500 mt-1">5시간 전</p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 인기 도시 TOP 3 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary-orange" />
-            인기 도시 TOP 3
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm">
-            {trendingCities.map((city, index) => (
-              <div key={city.id} className="flex items-center justify-between">
-                <span className="text-gray-700">
-                  {index + 1}. {city.name}
-                </span>
-                <span className="font-semibold">({city.currentNomads}명)</span>
-              </div>
-            ))}
           </div>
         </CardContent>
       </Card>

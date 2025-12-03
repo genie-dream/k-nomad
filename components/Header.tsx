@@ -43,14 +43,6 @@ export default function Header() {
 
         {/* 우측 메뉴 */}
         <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            className="hidden md:inline-flex"
-            onClick={() => console.log("도시 추가")}
-          >
-            도시 추가
-          </Button>
-
           {!loading && (
             <>
               {user ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
@@ -16,7 +17,10 @@ export default function CityCard({ city }: CityCardProps) {
   const [likesCount, setLikesCount] = useState(city.likes);
   const [dislikesCount, setDislikesCount] = useState(city.dislikes);
 
-  const handleLike = () => {
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault(); // Link 클릭 방지
+    e.stopPropagation(); // 이벤트 전파 방지
+
     if (userLiked) {
       // 좋아요 취소
       setUserLiked(false);
@@ -33,7 +37,10 @@ export default function CityCard({ city }: CityCardProps) {
     }
   };
 
-  const handleDislike = () => {
+  const handleDislike = (e: React.MouseEvent) => {
+    e.preventDefault(); // Link 클릭 방지
+    e.stopPropagation(); // 이벤트 전파 방지
+
     if (userDisliked) {
       // 싫어요 취소
       setUserDisliked(false);
@@ -51,73 +58,75 @@ export default function CityCard({ city }: CityCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-      {/* 도시 이미지 */}
-      <div className="relative h-48 bg-gradient-to-br from-orange-400 to-pink-400">
-        <div className="absolute top-3 left-3">
-          <Badge className="bg-white text-gray-900 hover:bg-white">
-            {city.region}
-          </Badge>
-        </div>
-      </div>
-
-      <CardContent className="p-4">
-        {/* 도시 이름 */}
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-bold">{city.name}</h3>
-          <span className="text-2xl">{city.weatherIcon}</span>
-        </div>
-
-        {/* Key-Value 형태 정보 */}
-        <div className="space-y-2 mb-3">
-          <div className="text-sm">
-            <span className="font-semibold text-gray-700">예산:</span>{" "}
-            <span className="text-gray-900">{city.budget}</span>
-          </div>
-          <div className="text-sm">
-            <span className="font-semibold text-gray-700">환경:</span>{" "}
-            <span className="text-gray-900">{city.environment.join(", ")}</span>
-          </div>
-          <div className="text-sm">
-            <span className="font-semibold text-gray-700">최고 계절:</span>{" "}
-            <span className="text-gray-900">{city.bestSeason.join(", ")}</span>
-          </div>
-        </div>
-
-        {/* 태그들 */}
-        <div className="flex flex-wrap gap-1 mb-3">
-          {city.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs">
-              {tag}
+    <Link href={`/cities/${city.id}`} className="block">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+        {/* 도시 이미지 */}
+        <div className="relative h-48 bg-gradient-to-br from-orange-400 to-pink-400">
+          <div className="absolute top-3 left-3">
+            <Badge className="bg-white text-gray-900 hover:bg-white">
+              {city.region}
             </Badge>
-          ))}
+          </div>
         </div>
-      </CardContent>
 
-      <CardFooter className="p-4 pt-0 flex items-center gap-3">
-        <button
-          className={`flex items-center gap-1 text-sm transition-colors ${
-            userLiked
-              ? "text-orange-500"
-              : "text-gray-600 hover:text-orange-500"
-          }`}
-          onClick={handleLike}
-        >
-          <ThumbsUp className="h-4 w-4" fill={userLiked ? "currentColor" : "none"} />
-          <span>{likesCount}</span>
-        </button>
-        <button
-          className={`flex items-center gap-1 text-sm transition-colors ${
-            userDisliked
-              ? "text-orange-500"
-              : "text-gray-600 hover:text-orange-500"
-          }`}
-          onClick={handleDislike}
-        >
-          <ThumbsDown className="h-4 w-4" fill={userDisliked ? "currentColor" : "none"} />
-          <span>{dislikesCount}</span>
-        </button>
-      </CardFooter>
-    </Card>
+        <CardContent className="p-4">
+          {/* 도시 이름 */}
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xl font-bold">{city.name}</h3>
+            <span className="text-2xl">{city.weatherIcon}</span>
+          </div>
+
+          {/* Key-Value 형태 정보 */}
+          <div className="space-y-2 mb-3">
+            <div className="text-sm">
+              <span className="font-semibold text-gray-700">예산:</span>{" "}
+              <span className="text-gray-900">{city.budget}</span>
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold text-gray-700">환경:</span>{" "}
+              <span className="text-gray-900">{city.environment.join(", ")}</span>
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold text-gray-700">최고 계절:</span>{" "}
+              <span className="text-gray-900">{city.bestSeason.join(", ")}</span>
+            </div>
+          </div>
+
+          {/* 태그들 */}
+          <div className="flex flex-wrap gap-1 mb-3">
+            {city.tags.slice(0, 3).map((tag) => (
+              <Badge key={tag} variant="outline" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+
+        <CardFooter className="p-4 pt-0 flex items-center gap-3">
+          <button
+            className={`flex items-center gap-1 text-sm transition-colors ${
+              userLiked
+                ? "text-orange-500"
+                : "text-gray-600 hover:text-orange-500"
+            }`}
+            onClick={handleLike}
+          >
+            <ThumbsUp className="h-4 w-4" fill={userLiked ? "currentColor" : "none"} />
+            <span>{likesCount}</span>
+          </button>
+          <button
+            className={`flex items-center gap-1 text-sm transition-colors ${
+              userDisliked
+                ? "text-orange-500"
+                : "text-gray-600 hover:text-orange-500"
+            }`}
+            onClick={handleDislike}
+          >
+            <ThumbsDown className="h-4 w-4" fill={userDisliked ? "currentColor" : "none"} />
+            <span>{dislikesCount}</span>
+          </button>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }

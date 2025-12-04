@@ -8,7 +8,8 @@
       "Bash(npm install:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(gh label create:*)"
     ],
     "deny": [],
     "ask": []
